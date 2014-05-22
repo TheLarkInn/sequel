@@ -2,6 +2,7 @@ module Sequel
   class Model
     extend Enumerable
     extend Inflections
+    include JSON
 
     # Class methods for Sequel::Model that implement basic model functionality.
     #
@@ -2237,6 +2238,20 @@ module Sequel
         else
           raise(Sequel::Error, "No primary key for model") unless model && (pk = model.primary_key)
           super(pk, value_column) 
+        end
+      end
+      
+      
+      
+      # Converts returned model into a JSON string only if the hash values for the model exist.
+      #   
+      #   Artist[1].values # => {:id=>1, :name=>'Jim', ...}
+      #
+      #   Artist[1].to_json # => "{\"id\":1,\"name\":\"Jim\", ...}"
+      # 
+      def to_json
+        if @values  
+          @values.to_json
         end
       end
 
